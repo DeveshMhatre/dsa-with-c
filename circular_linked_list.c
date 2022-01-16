@@ -22,6 +22,14 @@ CircularLinkedList *CircularLinkedList_insert_tail(CircularLinkedList *node,
 CircularLinkedList *CircularLinkedList_insert_at_index(CircularLinkedList *node,
                                                        int data, int index);
 
+/* Delete */
+CircularLinkedList *CircularLinkedList_delete_head(CircularLinkedList *node);
+CircularLinkedList *CircularLinkedList_delete_tail(CircularLinkedList *node);
+CircularLinkedList *CircularLinkedList_delete_by_value(CircularLinkedList *node,
+                                                       int data);
+CircularLinkedList *CircularLinkedList_delete_at_index(CircularLinkedList *node,
+                                                       int index);
+
 /* Reverse */
 CircularLinkedList *CircularLinkedList_reverse(CircularLinkedList *head);
 
@@ -32,16 +40,31 @@ int main(int argc, char *argv[]) {
   CircularLinkedList *head = CircularLinkedList_create(18);
   CircularLinkedList_traverse(head);
 
-  head = CircularLinkedList_insert_head(head, 16);
+  head = CircularLinkedList_insert_head(head, 15);
   CircularLinkedList_traverse(head);
 
   head = CircularLinkedList_insert_tail(head, 19);
   CircularLinkedList_traverse(head);
 
-  head = CircularLinkedList_insert_at_index(head, 17, 1);
+  head = CircularLinkedList_insert_at_index(head, 16, 1);
+  CircularLinkedList_traverse(head);
+
+  head = CircularLinkedList_insert_at_index(head, 17, 2);
   CircularLinkedList_traverse(head);
 
   head = CircularLinkedList_reverse(head);
+  CircularLinkedList_traverse(head);
+
+  head = CircularLinkedList_delete_head(head);
+  CircularLinkedList_traverse(head);
+
+  head = CircularLinkedList_delete_tail(head);
+  CircularLinkedList_traverse(head);
+
+  head = CircularLinkedList_delete_at_index(head, 2);
+  CircularLinkedList_traverse(head);
+
+  head = CircularLinkedList_delete_by_value(head, 17);
   CircularLinkedList_traverse(head);
 
   CircularLinkedList_kill(head);
@@ -159,6 +182,124 @@ CircularLinkedList *CircularLinkedList_insert_at_index(CircularLinkedList *node,
   free(new_node);
   head = CircularLinkedList_insert_tail(head, data);
 
+  return head;
+
+error:
+  exit(1);
+}
+
+CircularLinkedList *CircularLinkedList_delete_head(CircularLinkedList *node) {
+  CircularLinkedList *prev_head = node;
+
+  node = node->next;
+  CircularLinkedList *head = node;
+
+  while (node->next != prev_head) {
+    node = node->next;
+  }
+
+  node->next = head;
+
+  check_mem(prev_head);
+  free(prev_head);
+
+  return head;
+
+error:
+  exit(1);
+}
+
+CircularLinkedList *CircularLinkedList_delete_tail(CircularLinkedList *node) {
+  CircularLinkedList *head = node;
+  CircularLinkedList *prev_node;
+
+  while (node->next != head) {
+    prev_node = node;
+    node = node->next;
+  }
+
+  check_mem(node);
+  free(node);
+
+  prev_node->next = head;
+
+  return head;
+
+error:
+  exit(1);
+}
+
+CircularLinkedList *CircularLinkedList_delete_by_value(CircularLinkedList *node,
+                                                       int data) {
+  CircularLinkedList *head = node;
+
+  if (head->data == data) {
+    head = CircularLinkedList_delete_head(head);
+    return head;
+  }
+
+  CircularLinkedList *prev_node = node;
+  node = node->next;
+
+  while (node->next != head) {
+    if (node->data == data) {
+      prev_node->next = node->next;
+
+      check_mem(node);
+      free(node);
+
+      return head;
+    }
+
+    prev_node = node;
+    node = node->next;
+  }
+
+  if (node->data == data) {
+    head = CircularLinkedList_delete_tail(head);
+    return head;
+  }
+
+  log_err("No node with data %d was found!", data);
+  return head;
+
+error:
+  exit(1);
+}
+
+CircularLinkedList *CircularLinkedList_delete_at_index(CircularLinkedList *node,
+                                                       int index) {
+  CircularLinkedList *head = node;
+
+  if (index == 0) {
+    head = CircularLinkedList_delete_head(head);
+    return head;
+  }
+
+  CircularLinkedList *prev_node = node;
+  node = node->next;
+  int i = 1;
+
+  while (node->next != head) {
+    if (i == index) {
+      prev_node->next = node->next;
+      check_mem(node);
+      free(node);
+
+      return head;
+    }
+
+    prev_node = node;
+    node = node->next;
+    i += 1;
+  }
+
+  if (i == index) {
+    head = CircularLinkedList_delete_tail(head);
+    return head;
+  }
+
+  log_err("Invalid index provided!");
   return head;
 
 error:
