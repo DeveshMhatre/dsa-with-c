@@ -24,6 +24,14 @@ DoublyLinkedList *DoublyLinkedList_insert_tail(DoublyLinkedList *node,
 DoublyLinkedList *DoublyLinkedList_insert_at_index(DoublyLinkedList *node,
                                                    int data, int index);
 
+/* Delete */
+DoublyLinkedList *DoublyLinkedList_delete_head(DoublyLinkedList *node);
+DoublyLinkedList *DoublyLinkedList_delete_tail(DoublyLinkedList *node);
+DoublyLinkedList *DoublyLinkedList_delete_at_index(DoublyLinkedList *node,
+                                                   int index);
+DoublyLinkedList *DoublyLinkedList_delete_by_value(DoublyLinkedList *node,
+                                                   int data);
+
 /* Kill */
 void DoublyLinkedList_kill(DoublyLinkedList *node);
 
@@ -37,7 +45,22 @@ int main(int argc, char *argv[]) {
   DoublyLinkedList_traverse(head, false);
 
   head = DoublyLinkedList_insert_at_index(head, 39, 2);
-  DoublyLinkedList_traverse(head, true);
+  DoublyLinkedList_traverse(head, false);
+
+  head = DoublyLinkedList_insert_tail(head, 41);
+  DoublyLinkedList_traverse(head, false);
+
+  head = DoublyLinkedList_delete_by_value(head, 40);
+  DoublyLinkedList_traverse(head, false);
+
+  head = DoublyLinkedList_delete_at_index(head, 2);
+  DoublyLinkedList_traverse(head, false);
+
+  head = DoublyLinkedList_delete_head(head);
+  DoublyLinkedList_traverse(head, false);
+
+  head = DoublyLinkedList_delete_tail(head);
+  DoublyLinkedList_traverse(head, false);
 
   DoublyLinkedList_kill(head);
 
@@ -162,6 +185,105 @@ DoublyLinkedList *DoublyLinkedList_insert_at_index(DoublyLinkedList *node,
   log_err("Invalid index provided!");
 
   return head;
+
+error:
+  exit(1);
+}
+
+DoublyLinkedList *DoublyLinkedList_delete_head(DoublyLinkedList *node) {
+  DoublyLinkedList *prev_head = node;
+  DoublyLinkedList *head = node->next;
+
+  prev_head->prev->next = head;
+  head->prev = prev_head->prev;
+
+  check_mem(prev_head);
+  free(prev_head);
+
+  return head;
+
+error:
+  exit(1);
+}
+
+DoublyLinkedList *DoublyLinkedList_delete_tail(DoublyLinkedList *node) {
+  DoublyLinkedList *head = node;
+  DoublyLinkedList *prev_tail = head->prev;
+  DoublyLinkedList *tail = prev_tail->prev;
+
+  head->prev = tail;
+  tail->next = head;
+
+  check_mem(prev_tail);
+  free(prev_tail);
+
+  return head;
+
+error:
+  exit(1);
+}
+
+DoublyLinkedList *DoublyLinkedList_delete_at_index(DoublyLinkedList *node,
+                                                   int index) {
+  if (index == 0) {
+    node = DoublyLinkedList_delete_head(node);
+    return node;
+  }
+
+  DoublyLinkedList *head = node;
+
+  int i = 1;
+  node = node->next;
+
+  while (node != head) {
+    if (i == index) {
+      node->prev->next = node->next;
+      node->next->prev = node->prev;
+
+      check_mem(node);
+      free(node);
+
+      return head;
+    }
+
+    node = node->next;
+    i += 1;
+  }
+
+  log_err("Invalid index provided!");
+
+  return head;
+
+error:
+  exit(1);
+}
+
+DoublyLinkedList *DoublyLinkedList_delete_by_value(DoublyLinkedList *node,
+                                                   int data) {
+  if (node->data == data) {
+    node = DoublyLinkedList_delete_head(node);
+    return node;
+  }
+
+  DoublyLinkedList *head = node;
+
+  node = node->next;
+
+  while (node != head) {
+    if (node->data == data) {
+      node->prev->next = node->next;
+      node->next->prev = node->prev;
+
+      check_mem(node);
+      free(node);
+
+      return head;
+    }
+    node = node->next;
+  }
+
+  log_err("No node with data %d was found!", data);
+  return node;
 
 error:
   exit(1);
