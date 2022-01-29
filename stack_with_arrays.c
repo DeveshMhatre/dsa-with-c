@@ -20,7 +20,13 @@ bool Stack_isEmpty(Stack *stack);
 bool Stack_isFull(Stack *stack);
 
 /* Peek */
-int Stack_peek(Stack *stack);
+int Stack_peek(Stack *stack, int position);
+
+/* Return Top */
+int Stack_peek_top(Stack *stack);
+
+/* Return Bottom */
+int Stack_peek_bottom(Stack *stack);
 
 /* Push */
 void Stack_push(Stack *stack, int item);
@@ -35,8 +41,12 @@ int main(int argc, char *argv[]) {
   Stack *stack = Stack_create(5);
 
   Stack_push(stack, 10);
+  Stack_push(stack, 11);
+  Stack_push(stack, 12);
 
-  printf("Element at Top: %d\n", Stack_peek(stack));
+  printf("Element at Top: %d\n", Stack_peek_top(stack));
+  printf("Element at Position 2: %d\n", Stack_peek(stack, 2));
+  printf("Element at Bottom: %d\n", Stack_peek_bottom(stack));
 
   printf("Popped Element: %d\n", Stack_pop(stack));
 
@@ -72,12 +82,36 @@ bool Stack_isFull(Stack *stack) {
   return false;
 }
 
-int Stack_peek(Stack *stack) {
+int Stack_peek(Stack *stack, int position) {
   if (Stack_isEmpty(stack) == true) {
     log_info("Stack empty!");
+    return -1;
   }
 
+  int peek_index = stack->top - position + 1;
+
+  if (peek_index < 0) {
+    log_err("Invalid position!");
+    return -1;
+  }
+
+  return stack->arr[peek_index];
+}
+
+int Stack_peek_top(Stack *stack) {
+  if (Stack_isEmpty(stack)) {
+    log_info("Stack empty!");
+    return -1;
+  }
   return stack->arr[stack->top];
+}
+
+int Stack_peek_bottom(Stack *stack) {
+  if (Stack_isEmpty(stack)) {
+    log_info("Stack empty!");
+    return -1;
+  }
+  return stack->arr[0];
 }
 
 void Stack_push(Stack *stack, int item) {
