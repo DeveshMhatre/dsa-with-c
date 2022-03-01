@@ -84,7 +84,6 @@ bool Stack_isFull(Stack *stack) {
 
 char Stack_peek(Stack *stack, int position) {
   if (Stack_isEmpty(stack) == true) {
-    log_info("Stack empty!");
     return -1;
   }
 
@@ -100,7 +99,6 @@ char Stack_peek(Stack *stack, int position) {
 
 char Stack_peek_top(Stack *stack) {
   if (Stack_isEmpty(stack)) {
-    log_info("Stack empty!");
     return -1;
   }
   return stack->arr[stack->top];
@@ -108,7 +106,6 @@ char Stack_peek_top(Stack *stack) {
 
 char Stack_peek_bottom(Stack *stack) {
   if (Stack_isEmpty(stack)) {
-    log_info("Stack empty!");
     return -1;
   }
   return stack->arr[0];
@@ -126,7 +123,6 @@ void Stack_push(Stack *stack, char item) {
 
 char Stack_pop(Stack *stack) {
   if (Stack_isEmpty(stack) == true) {
-    log_err("Stack empty!");
     return stack->top;
   }
 

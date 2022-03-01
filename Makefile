@@ -5,9 +5,8 @@ CC = clang
 CFLAGS = -Wall -DNDEBUG
 
 # The name to use for both the target source files, and the output files
-all: custom_array call_by_ref linked_list circular_linked_list doubly_linked_list stack_with_arrays stack_with_linked_list parenthisis_matching multiple_parenthisis_matching
+all: custom_array call_by_ref linked_list circular_linked_list doubly_linked_list stack_with_arrays stack_with_linked_list parenthisis_matching multiple_parenthisis_matching infix_to_postfix
 
 
 clear:
-	rm custom_array call_by_ref linked_list circular_linked_list doubly_linked_list stack_with_arrays stack_with_linked_list parenthisis_matching multiple_parenthisis_matching
-
+	rm custom_array call_by_ref linked_list circular_linked_list doubly_linked_list stack_with_arrays stack_with_linked_list parenthisis_matching multiple_parenthisis_matching infix_to_postfix
